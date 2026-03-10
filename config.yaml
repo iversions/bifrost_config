@@ -1,0 +1,38 @@
+name: Omniwork Team Config
+version: 1.0.0
+schema: v1
+
+models:
+  - name: Bifrost Azure 
+    provider: openai
+    model: azure/gpt-4o-mini
+    apiBase: ${BIFROST_URL}
+    apiKey: ${BIFROST_VIRTUAL_KEY_AZURE}
+    roles:
+      - chat
+      - edit
+      - apply
+
+  - name: Bifrost Vertex AI
+    provider: openai
+    model: vertex/gemini-2.5-flash
+    apiBase: ${BIFROST_URL}
+    apiKey: ${BIFROST_VIRTUAL_KEY_VERTEX}
+    roles:
+      - chat
+      - edit
+      - apply
+
+# --- ARCHITECTURAL GUARDRAILS ---
+rules:
+  - "ALWAYS start with a section titled '### ARCHITECTURAL PLAN' before generating code."
+  - "Every task must include a '### SOFTWARE STACK' summary."
+  - "For .NET and PHP, strictly follow SOLID principles and OOP patterns."
+  - "For React, favor functional components and custom hooks for logic encapsulation."
+  - "Do not output real API keys; use [REDACTED] placeholders."
+
+context:
+  - provider: file
+  - provider: code
+  - provider: diff
+  - provider: terminal
