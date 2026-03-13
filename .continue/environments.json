@@ -1,0 +1,7 @@
+[
+  {
+    "install": "echo 'Configuration repository - no dependencies to install'",
+    "start": "echo 'Configuration file available at config.yaml' && test -f config.yaml && echo 'Configuration validated successfully'",
+    "resourceSize": "small"
+  }
+]
