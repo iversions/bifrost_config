@@ -1,60 +1,69 @@
-name: Omniwork Team Config
-version: 1.0.0
+name: Omniwork Master Config
+version: 1.0.1
 schema: v1
 
 models:
-  # --- THE "VIBE CODING" & AGENT ENGINE ---
-  - name: Bifrost Azure (Standard)
+  # --- THE AGENT ENGINE (The "Worker") ---
+  # This model handles chat, refactors, and autonomous agent tasks.
+  - name: Bifrost Azure (Agent)
     provider: openai
-    model: azure/gpt-4o-mini
-    apiBase: "${BIFROST_URL}"
-    apiKey: "${BIFROST_VIRTUAL_KEY_AZURE}"
+    model: azure/gpt-4.1-mini
+    apiBase: url
+    apiKey: yourkey
     roles:
       - chat
       - edit
-      - apply  # Vital for Agent mode to "apply" code changes
+      - apply  # Critical: Allows the agent to modify files directly
     defaultCompletionOptions:
-      temperature: 0.1 # Lower temperature for more consistent coding
+      temperature: 0.1
 
-  # --- THE ARCHITECT & PLANNER ---
-  - name: Bifrost Vertex AI (Architect)
+  # --- THE ARCHITECT (The "Planner") ---
+  # Used for high-level reasoning and SRS analysis.
+  - name: Bifrost Azure AI (Architect)
     provider: openai
-    model: vertex/gemini-2.5-flash
-    apiBase: "${BIFROST_URL}"
-    apiKey: "${BIFROST_VIRTUAL_KEY_VERTEX}"
+    model: azure/gpt-4.1
+    apiBase: url
+    apiKey: yourkey
     roles:
-      - chat   # Used for planning and heavy research
+      - chat
     defaultCompletionOptions:
       temperature: 0.3
 
-  # --- THE AUTOCOMPLETE ENGINE ---
-  # Using 4o-mini for autocomplete ensures all keystrokes are logged in Bifrost/Neon
+  # --- THE AUTOCOMPLETE ENGINE (The "Ghostwriter") ---
+  # Optimized for low-latency code completion as you type.
   - name: Bifrost Autocomplete
     provider: openai
-    model: azure/gpt-4o-mini
-    apiBase: "${BIFROST_URL}"
-    apiKey: "${BIFROST_VIRTUAL_KEY_AZURE}"
+    model: azure/gpt-4.1-mini
+    apiBase: url
+    apiKey: yourkey
     roles:
       - autocomplete
 
-# --- ARCHITECTURAL, SECURITY & PERFORMANCE GUARDRAILS ---
+# --- AGENTIC & ARCHITECTURAL RULES ---
 rules:
-  # 1. Mandatory Planning Phase
-  - "PHASE 1 (PLAN): Always start with '### ARCHITECTURAL PLAN'. Detail logic flow and dependency injection before code."
-  - "PHASE 2 (STACK): Provide a '### SOFTWARE STACK' summary (e.g., .NET 8, PHP 8.3, React 19)."
+  # 1. Agent Autonomy & Worker Mindset
+  - "AGENT ROLE: You are a Senior Full-Stack Engineer. Do not just suggest code; provide the complete solution including directory structures and setup scripts."
+  - "TERMINAL USAGE: For environment setup (venv, npm, pip), provide exact shell commands in executable code blocks."
+  - "TASK MANAGEMENT: For complex tasks, create and maintain a 'todo.md' in the root to track progress across multiple turns."
 
-  # 2. VAPT & Security Compliance
-  - "VAPT COMPLIANCE: Audit every response for OWASP Top 10 risks. Prevent SQLi in .NET/PHP and XSS in React."
+  # 2. Mandatory Planning Phase
+  - "PHASE 1 (PLAN): Always start with '### ARCHITECTURAL PLAN'. Detail logic flow and dependency injection before code."
+  - "PHASE 2 (STACK): Provide a '### SOFTWARE STACK' summary (e.g., FastAPI, .NET 8, React 19)."
+
+  # 3. VAPT & Security Compliance
+  - "VAPT COMPLIANCE: Audit for OWASP Top 10. Prevent SQLi in .NET/PHP and XSS in React. Validate all I/O."
   - "SECRET HYGIENE: Never output real API keys or connection strings. Use [REDACTED_SECRET] placeholders."
 
-  # 3. Code Optimization & Standards
-  - "PERFORMANCE: Optimize for Big O complexity. Avoid N+1 query problems in PHP/EF Core. Prevent unnecessary React re-renders."
+  # 4. Standards & Optimization
+  - "PERFORMANCE: Optimize for Big O. Avoid N+1 query problems. Prevent unnecessary React re-renders."
   - "OOP/SOLID: For .NET and PHP, strictly enforce Interface Segregation and Dependency Inversion."
-  - "CLEAN CODE: Follow Microsoft Coding Conventions for .NET and PSR-12 for PHP."
+
+# --- REMOTE CONFIG POINTER (For Reference) ---
+# remoteConfigServerUrl: https://raw.githubusercontent.com/iversions/bifrost_config/refs/heads/master/config.yaml
 
 context:
   - provider: file
-  - provider: code      # Allows AI to search for definitions
-  - provider: diff      # Crucial for the AI to see what you just changed
-  - provider: terminal  # Allows the AI to see build errors
-  - provider: codebase  # THE AGENT TOOL: Essential for project-wide reasoning
+  - provider: code
+  - provider: diff
+  - provider: terminal
+  - provider: codebase # Essential for @codebase agentic reasoning
