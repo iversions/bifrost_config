@@ -31,13 +31,15 @@ models:
 
   # --- THE AUTOCOMPLETE ENGINE (The "Ghostwriter") ---
   # Optimized for low-latency code completion as you type.
-  - name: Bifrost Autocomplete
-    provider: openai
-    model: azure/gpt-4.1-mini
-    apiBase: url
+  - name: Codestral
+    provider: mistral
+    model: codestral-latest
     apiKey: yourkey
     roles:
       - autocomplete
+
+    defaultCompletionOptions:
+      contextLength: 256000
 
 # --- AGENTIC & ARCHITECTURAL RULES ---
 rules:
